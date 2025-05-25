@@ -4,8 +4,8 @@ Servana CLI – Auction Data Fetcher with Name & Image Caching
 
 Part of the Servana WoW AH Price Checker suite. This script:
   • Fetches raw auction data for a specified connected-realm (default 4)
-  • Caches all unique item names to `item_name_cache.db`
-  • Caches all unique item icon URLs to `item_pic_cache.db`
+  • Caches all unique item names to `.cache/item_name_cache.db`
+  • Caches all unique item icon URLs to `.cache/item_pic_cache.db`
   • Writes the full auction JSON to a file
 
 Usage:
@@ -17,8 +17,8 @@ Requires:
 
 Outputs:
   • auctions_<realm>_raw.json      – full auction list
-  • item_name_cache.db             – shelve of item IDs → names
-  • item_pic_cache.db              – shelve of item IDs → icon URLs
+  • .cache/item_name_cache.db      – shelve of item IDs → names
+  • .cache/item_pic_cache.db       – shelve of item IDs → icon URLs
 """
 
 import os
@@ -32,13 +32,17 @@ from dotenv import load_dotenv
 # Load environment variables from .env or system
 load_dotenv()
 
+# Ensure cache directory exists
+CACHE_DIR = ".cache"
+os.makedirs(CACHE_DIR, exist_ok=True)
+
 # OAuth & API endpoints
 TOKEN_URL = "https://us.battle.net/oauth/token"
 BASE_API  = "https://us.api.blizzard.com/data/wow"
 
-# Cache filenames
-NAME_CACHE = "item_name_cache.db"
-PIC_CACHE  = "item_pic_cache.db"
+# Cache filenames (in `.cache/` directory)
+NAME_CACHE = os.path.join(CACHE_DIR, "item_name_cache.db")
+PIC_CACHE  = os.path.join(CACHE_DIR, "item_pic_cache.db")
 
 # Token cache
 _cached_token = None
